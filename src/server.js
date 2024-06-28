@@ -1,9 +1,12 @@
 const express = require("express");
 const routes = require("./routes");
+const runMigrations = require("./database/sqlite/migrations");
 
 const app = express();
 app.use(express.json());
 app.use(routes);
+
+runMigrations();
 
 
 app.use((error, request, response, next) => {
