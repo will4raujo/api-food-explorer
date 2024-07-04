@@ -1,5 +1,5 @@
 const knex = require("../database/knex");
-const AppError = require("../errors/AppError");
+const AppError = require("../utils/AppError");
 
 class DishesController {
   async create(req, res) {
@@ -100,3 +100,5 @@ class DishesController {
   }
   
 }
+
+module.exports = DishesController;
