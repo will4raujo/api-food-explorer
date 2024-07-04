@@ -1,8 +1,11 @@
 const { Router } = require('express');
+const ensureAuthenticated = require('../middlewares/ensureAuthenticated');
 const DishesController = require('../controllers/DishesController');
 const dishesController = new DishesController();
 
 const dishesRoutes = Router();
+
+dishesRoutes.use(ensureAuthenticated);
 
 dishesRoutes.get('/', dishesController.index);
 dishesRoutes.post('/', dishesController.create);

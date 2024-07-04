@@ -13,15 +13,10 @@ class UserController {
       throw new AppError("Este e-mail já está em uso.");
     }
 
-    console.log('não existe')
-
     const passwordHash = await hash(password, 8);
-
-    console.log('hash gerado')
 
     await database.run('INSERT INTO users (name, email, password) VALUES (?, ?, ?)', [name, email, passwordHash])
 
-    console.log('inseriu no banco')
 
     return response.status(200).json()
 
