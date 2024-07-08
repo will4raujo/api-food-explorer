@@ -107,6 +107,7 @@ class DishesController {
   async delete(req, res) {
     const { id } = req.params;
     const user_id = req.user.id;
+    const ingredientsDish = await knex("ingredients").where({ dish_id: id });
 
     const dish = await knex("dishes").where({ id }).first();
 
@@ -116,6 +117,10 @@ class DishesController {
 
     if (dish.user_id !== user_id) {
       throw new AppError("You can only delete your own dishes", 403);
+    }
+
+    if (ingredientsDish.length > 0) {
+      await knex("ingredients").where({ dish_id: id }).delete();
     }
 
     await knex("dishes").where({ id }).delete();
