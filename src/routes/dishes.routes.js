@@ -12,7 +12,7 @@ dishesRoutes.get('/', verifyUserAuthorization(['admin', 'customer']), dishesCont
 dishesRoutes.post('/', verifyUserAuthorization(['admin']), dishesController.create);
 dishesRoutes.get('/search', verifyUserAuthorization(['admin', 'customer']), dishesController.getByTitle);
 dishesRoutes.get('/search/ingredients', verifyUserAuthorization(['admin', 'customer']), dishesController.getByIngredients);
-dishesRoutes.get('/:id', verifyUserAuthorization(['customer']), dishesController.getById);
+dishesRoutes.get('/:id', verifyUserAuthorization(['admin', 'customer']), dishesController.getById);
 dishesRoutes.put('/:id', verifyUserAuthorization(['admin']), dishesController.update);
 dishesRoutes.delete('/:id', verifyUserAuthorization(['admin']), dishesController.delete);
 

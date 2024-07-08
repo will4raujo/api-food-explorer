@@ -51,19 +51,27 @@ class DishesController {
 
   async getById(req, res) {
     const { id } = req.params;
-    const dish = await knex("dishes").where({ id }).first();
+    const dish = await knex("dishes").where({ id }).first()
+    const ingredients = await knex("ingredients").select("name", "id").where({ dish_id: id });
     if (!dish) {
       throw new AppError("Dish not found", 404);
     }
-    return res.json(dish);
+
+    const dishWithIngredients = {
+      ...dish,
+      ingredients,
+    };
+
+    return res.json(dishWithIngredients);
   }
 
   async update(req, res) {
     const { id } = req.params;
-    const { name, category, description, price } = req.body;
+    const { name, category, description, price, ingredients } = req.body;
     const user_id = req.user.id;
 
     const dish = await knex("dishes").where({ id }).first();
+    const dishIngredients = await knex("ingredients").where({ dish_id: id});
 
     if (!dish) {
       throw new AppError("Dish not found", 404);
@@ -79,6 +87,19 @@ class DishesController {
       description,
       price,
     });
+
+    if (ingredients) {
+      const ingredientsToInsert = ingredients.map(ingredient => {
+        return {
+          dish_id: id,
+          user_id,
+          name: ingredient,
+        }
+      });
+
+      await knex("ingredients").where({ dish_id: id }).delete();
+      await knex("ingredients").insert(ingredientsToInsert);
+    }
 
     return res.json();
   }
