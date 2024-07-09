@@ -39,20 +39,39 @@ class DishesController {
     return res.json(dishes);
   }
 
-  async getByTitle(req, res) {
-    const { title } = req.query;
-    const dishes = await knex("dishes").where("name", "like", `%${title}%`);
-    return res.json(dishes);
+  async byCategory(request, response) {
+    const { c } = request.query;
+
+    try {
+      const results = await knex('dishes').where('category', c);
+
+      return response.json(results);
+    } catch (error) {
+      console.error('Error searching for dishes:', error);
+      return response.status(500).json({ error: 'Internal server error' });
+    }
   }
 
-  async getByIngredients(req, res) {
-    const { ingredients } = req.query;
-    const dishes = await knex("dishes")
-      .join("ingredients", "dishes.id", "=", "ingredients.dish_id")
-      .whereIn("ingredients.name", ingredients.split(","))
-      .groupBy("dishes.id")
-      .havingRaw(`COUNT(DISTINCT ingredients.name) = ${ingredients.split(",").length}`);
-    return res.json(dishes);
+  async search(request, response) {
+    const { q } = request.query;
+
+    try {
+      const results = await knex('dishes')
+        .where('name', 'like', `%${q}%`)
+        
+        .orWhere(function() {
+          this.whereIn('id', function() {
+            this.select('dish_id')
+              .from('ingredients')
+              .where('name', 'like', `%${q}%`);
+          });
+        });
+
+      return response.json(results);
+    } catch (error) {
+      console.error('Error searching for dishes:', error);
+      return response.status(500).json({ error: 'Internal server error' });
+    }
   }
 
   async getById(req, res) {
