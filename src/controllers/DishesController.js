@@ -1,9 +1,9 @@
 const knex = require("../database/knex");
 const AppError = require("../utils/AppError");
+const DiskStorage = require("../providers/DiskStorage");
 
 class DishesController {
   async create(request, res) {
-
     const { name, category, description, price, ingredients } = request.body;
     const user_id = request.user.id;
 
@@ -15,15 +15,21 @@ class DishesController {
       user_id,
     });
 
-    const ingredientsToInsert = ingredients.map(ingredient => {
-      return {
-        dish_id,
-        user_id,
-        name: ingredient,
-      }
-    });
+    const parsedIngredients = JSON.parse(ingredients);
+    const ingredientsToInsert = parsedIngredients.map(ingredient => ({
+      dish_id,
+      user_id,
+      name: ingredient,
+    }));
 
     await knex("ingredients").insert(ingredientsToInsert);
+
+    if (request.file) {
+      const dishFilename = request.file.filename;
+      const diskStorage = new DiskStorage();
+      const filename = await diskStorage.saveFile(dishFilename);
+      await knex("dishes").where({ id: dish_id }).update({ image_url: filename });
+    }
 
     return res.status(201).json();
   }
@@ -70,6 +76,7 @@ class DishesController {
     const { name, category, description, price, ingredients } = req.body;
     const user_id = req.user.id;
 
+    const diskStorage = new DiskStorage();
     const dish = await knex("dishes").where({ id }).first();
     const dishIngredients = await knex("ingredients").where({ dish_id: id});
 
@@ -89,16 +96,24 @@ class DishesController {
     });
 
     if (ingredients) {
-      const ingredientsToInsert = ingredients.map(ingredient => {
-        return {
-          dish_id: id,
-          user_id,
-          name: ingredient,
-        }
-      });
+      const ingredientsToInsert = JSON.parse(ingredients).map(ingredient => ({
+        dish_id: id,
+        user_id,
+        name: ingredient,
+      }));
 
       await knex("ingredients").where({ dish_id: id }).delete();
       await knex("ingredients").insert(ingredientsToInsert);
+    }
+
+    if (req.file && dish.image_url) {
+      await diskStorage.deleteFile(dish.image_url);
+    }
+
+    if (req.file) {
+      const dishFilename = req.file.filename;
+      const filename = await diskStorage.saveFile(dishFilename);
+      await knex("dishes").where({ id }).update({ image_url: filename });
     }
 
     return res.json();
