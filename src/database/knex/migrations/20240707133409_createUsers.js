@@ -12,18 +12,10 @@ exports.up = knex => knex.schema.createTable('users', table => {
 }).then(() => {
   return knex("users").insert([
     {
-      name: "Usuário Admin",
-      email: "admin@teste.com",
-      password: "123456",
+      name: "Semeador",
+      email: "semeador@teste.com",
+      password: "kd65dAnAd8yY4E5a3W",
       role: "admin",
-      created_at: knex.fn.now(),
-      updated_at: knex.fn.now()
-    },
-    {
-      name: "Customer",
-      email: "customer@teste.com",
-      password: "123456",
-      role: "customer",
       created_at: knex.fn.now(),
       updated_at: knex.fn.now()
     },
