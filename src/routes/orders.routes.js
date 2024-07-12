@@ -10,5 +10,6 @@ ordersRoutes.use(ensureAuthenticated);
 
 ordersRoutes.get('/', verifyUserAuthorization(['admin']), ordersController.index);
 ordersRoutes.post('/', verifyUserAuthorization(['customer']), ordersController.create);
+ordersRoutes.put('/:id', verifyUserAuthorization(['admin']), ordersController.orderStatus);
 
 module.exports = ordersRoutes;
