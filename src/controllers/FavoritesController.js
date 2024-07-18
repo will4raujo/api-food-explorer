@@ -62,7 +62,6 @@ class OrdersController {
 
   async isFavoriteByDishId(request, response) {
     const { dishId } = request.params;
-    console.log(dishId);
     const user_id = request.user.id;
 
     const favorite = await knex('favorites')
