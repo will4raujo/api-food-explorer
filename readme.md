@@ -11,19 +11,19 @@ To get started with this project, you'll need to clone the repository and instal
 - [Node.js](https://nodejs.org/) (v14.x or later recommended)
 - [Git](https://git-scm.com/)
 
-### Steps
+## Steps
 
 1. **Clone the repository:**
 
-   ```sh
-   git clone https://github.com/will4raujo/api-food-explorer.git
-   ```
+```sh
+  git clone https://github.com/will4raujo/api-food-explorer.git
+```
 
 2. **Install Node Dependence**
 
-  ```sh
-    npm i
-  ```
+```sh
+  npm i
+```
 
 3. **Check ports**
 

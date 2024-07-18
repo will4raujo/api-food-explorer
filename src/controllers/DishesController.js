@@ -36,16 +36,44 @@ class DishesController {
 
   async index(req, res) {
     const dishes = await knex("dishes").select("*");
-    return res.json(dishes);
+    const user_id = req.user.id;
+
+    const favorites = await knex("favorites")
+      .where("user_id", user_id)
+      .select("dish_id");
+
+    const dishesWithFavorites = dishes.map(dish => {
+      const isFavorite = favorites.some(favorite => favorite.dish_id === dish.id);
+      return {
+        ...dish,
+        isFavorite,
+      };
+    })
+
+    return res.json(dishesWithFavorites);
   }
 
   async byCategory(request, response) {
     const { c } = request.query;
-
+    const user_id = request.user.id;
+  
     try {
-      const results = await knex('dishes').where('category', c);
+      const dishes = await knex('dishes').where('category', c);
+  
+      const favorites = await knex('favorites')
+        .select('dish_id', 'is_favorite')
+        .where('user_id', user_id);
 
-      return response.json(results);
+      const dishesWithFavorites = dishes.map(dish => {
+        const isFavorite = favorites.some(favorite => favorite.dish_id === dish.id && favorite.is_favorite === 1);
+        return {
+          ...dish,
+          isFavorite: isFavorite,
+        };
+      });
+  
+      return response.json(dishesWithFavorites);
+  
     } catch (error) {
       console.error('Error searching for dishes:', error);
       return response.status(500).json({ error: 'Internal server error' });
