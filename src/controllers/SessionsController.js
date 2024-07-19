@@ -32,7 +32,7 @@ class SessionsCrontroller {
     httpOnly: true,
     sameSite: "none",
     secure: true,
-    maxAge: 60 * 60 * 1000,
+    maxAge: 1440 * 60 * 1000,
   })
 
   delete user.password;

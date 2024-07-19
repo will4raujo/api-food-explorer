@@ -1,11 +1,8 @@
 const AppError = require('../utils/AppError');
-const sqliteConnection = require('../database/sqlite');
 const knex = require('../database/knex');
 class UsersValidatedController {
   async index(request, response) {
     const { user } = request
-
-    const database = await sqliteConnection();
 
     const checkUserExists = await knex('users').where({ id: user.id });
     
