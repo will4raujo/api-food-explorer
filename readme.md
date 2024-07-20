@@ -22,18 +22,24 @@ To get started with this project, you'll need to clone the repository and instal
 2. **Install Node Dependence**
 
 ```sh
-  npm i
+  npm install
 ```
 
-3. **Check ports**
+3. **Environment Variables**
 
-Verify that port 3333 are free
-If there are port conflicts, adjust the ports in file server.js and file api.js in service folder in frontend repository
-
-4. **Start the application**
-
-Start the application in development mode:
+Before running the application, make sure to set up your environment variables. replace the ".env.example" file in the root of the project to ".env", and add the following variables:
 
 ```sh
-npm run start:dev
+AUTH_SECRET=your_auth_secret
+PORT=your_preferred_port
+```
+
+Replace your_auth_secret with a secret key for authentication and your_preferred_port with the port number you want the application to run on (e.g., 3333).
+
+## Usage
+
+To start the development server and view the application, run:
+
+```sh
+npm run dev
 ```
